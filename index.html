@@ -16,6 +16,30 @@
             position: absolute;
             height: auto;
             transition: all 0.1s ease;
+            cursor: pointer;
+        }
+        .score-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            z-index: 1000;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .background-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.3);
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            text-align: center;
+            z-index: -1;
+            white-space: nowrap;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         @keyframes rgbBackground {
             0% { background-color: rgb(255, 0, 0); }
@@ -26,53 +50,71 @@
     </style>
 </head>
 <body>
+    <div class="score-container">
+        Score: <span id="score">0</span>
+        Images: <span id="count">0</span>
+    </div>
+    <div class="background-text">
+        OHMAAN<br>
+        developed by Gianni HUYNH<br>
+        tous droits réservés à gianni et mathiiiias
+    </div>
     <script>
-        let speed = 1000; // Vitesse initiale en millisecondes
+        let speed = 1000;
         let count = 0;
+        let score = 0;
         const images = ['ohman.png', 'face.png'];
         const sounds = ['CHILL.mp3', 'NRV.mp3', 'MID.mp3', 'REVERSE.mp3'];
         
         // Configuration de la musique de fond
         const backgroundMusic = new Audio('elevator.mp3');
-        backgroundMusic.volume = 0.5; // Volume à 50%
-        backgroundMusic.loop = true; // Lecture en boucle
+        backgroundMusic.volume = 0.5;
+        backgroundMusic.loop = true;
         
-        // Démarrer la musique de fond au chargement de la page
+        // Mise à jour du score
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('count').textContent = count;
+        }
+        
         window.addEventListener('load', () => {
             backgroundMusic.play();
+            updateScore();
         });
         
         function playRandomSound() {
             const audio = new Audio(sounds[Math.floor(Math.random() * sounds.length)]);
-            audio.volume = 0.7; // Volume à 70% pour les sons aléatoires
+            audio.volume = 0.7;
             audio.play();
         }
         
         function createOhMan() {
             const ohman = document.createElement('img');
-            // Alterne entre les deux images
             ohman.src = images[count % 2];
             ohman.className = 'ohman';
             
-            // Taille aléatoire entre 50px et 200px
             const size = Math.random() * 150 + 50;
             ohman.style.width = size + 'px';
             
-            // Position aléatoire sur l'écran
             ohman.style.left = Math.random() * (window.innerWidth - size) + 'px';
             ohman.style.top = Math.random() * (window.innerHeight - size) + 'px';
             
-            // Rotation aléatoire
             ohman.style.transform = `rotate(${Math.random() * 360}deg)`;
             
-            document.body.appendChild(ohman);
+            // Ajout de l'interactivité
+            ohman.addEventListener('click', () => {
+                score += 10;
+                updateScore();
+                ohman.remove();
+                playRandomSound();
+            });
             
-            // Jouer un son aléatoire
+            document.body.appendChild(ohman);
             playRandomSound();
             
             count++;
+            updateScore();
             
-            // Accélération progressive
             if (count % 5 === 0) {
                 speed = Math.max(50, speed * 0.8);
             }
@@ -80,7 +122,6 @@
             setTimeout(createOhMan, speed);
         }
         
-        // Démarrer l'animation
         createOhMan();
     </script>
 </body>
