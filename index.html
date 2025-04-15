@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oh Man... 😅</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            animation: rgbBackground 5s linear infinite;
+        }
+        .ohman {
+            position: absolute;
+            height: auto;
+            transition: all 0.1s ease;
+        }
+        @keyframes rgbBackground {
+            0% { background-color: rgb(255, 0, 0); }
+            33% { background-color: rgb(0, 255, 0); }
+            66% { background-color: rgb(0, 0, 255); }
+            100% { background-color: rgb(255, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let speed = 1000; // Vitesse initiale en millisecondes
+        let count = 0;
+        const images = ['ohman.png', 'face.png'];
+        const sounds = ['CHILL.mp3', 'NRV.mp3', 'MID.mp3', 'REVERSE.mp3'];
+        
+        // Configuration de la musique de fond
+        const backgroundMusic = new Audio('elevator.mp3');
+        backgroundMusic.volume = 0.5; // Volume à 50%
+        backgroundMusic.loop = true; // Lecture en boucle
+        
+        // Démarrer la musique de fond au chargement de la page
+        window.addEventListener('load', () => {
+            backgroundMusic.play();
+        });
+        
+        function playRandomSound() {
+            const audio = new Audio(sounds[Math.floor(Math.random() * sounds.length)]);
+            audio.volume = 0.7; // Volume à 70% pour les sons aléatoires
+            audio.play();
+        }
+        
+        function createOhMan() {
+            const ohman = document.createElement('img');
+            // Alterne entre les deux images
+            ohman.src = images[count % 2];
+            ohman.className = 'ohman';
+            
+            // Taille aléatoire entre 50px et 200px
+            const size = Math.random() * 150 + 50;
+            ohman.style.width = size + 'px';
+            
+            // Position aléatoire sur l'écran
+            ohman.style.left = Math.random() * (window.innerWidth - size) + 'px';
+            ohman.style.top = Math.random() * (window.innerHeight - size) + 'px';
+            
+            // Rotation aléatoire
+            ohman.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            document.body.appendChild(ohman);
+            
+            // Jouer un son aléatoire
+            playRandomSound();
+            
+            count++;
+            
+            // Accélération progressive
+            if (count % 5 === 0) {
+                speed = Math.max(50, speed * 0.8);
+            }
+            
+            setTimeout(createOhMan, speed);
+        }
+        
+        // Démarrer l'animation
+        createOhMan();
+    </script>
+</body>
+</html>
